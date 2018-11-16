@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 /**
@@ -37,15 +38,11 @@ public class GameShould {
     @Test
     public void be_open_when_created() {
 
-        Deck deck = new Deck();
-        deck.generate();
-        deck.shuffle();
-
         // check that... When a game is created, its state is OPEN.
 
-        Game game = new Game(deck);
+        Game game = new Game(new Deck());
 
-        assertEquals("open", game.getState());
+        assertThat(game.getState(), is("open"));
 
     }
 
@@ -60,9 +57,7 @@ public class GameShould {
 
         game.join("john");
 
-        assertEquals(Arrays.asList("john"),
-                game.getPlayerNames());
-
+        assertThat(game.getPlayerNames(), is(Arrays.asList("john")));
     }
 
     @Test
@@ -76,8 +71,37 @@ public class GameShould {
         game.join("john");
         game.join("mary");
 
-        assertEquals("playing",
-                game.getState());
+        assertThat(game.getState(), is("playing"));
+
+    }
+
+    @Test
+    public void not_allow_joining_if_not_open() {
+
+        //
+
+        Game game = new Game(new Deck());
+
+        game.join("john");
+        game.join("mary");
+
+        try {
+            game.join("alex");
+            fail();
+        } catch (RuntimeException e){
+            // jumps here if an exception was thrown
+            // expected
+        }
+    }
+
+    @Test(expected = JoiningNotAllowedException.class)
+    public void not_allow_joining_if_not_open_2() {
+
+        Game game = new Game(new Deck());
+
+        game.join("john");
+        game.join("mary");
+        game.join("alex");
 
     }
 }

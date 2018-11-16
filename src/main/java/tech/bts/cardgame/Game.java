@@ -22,7 +22,15 @@ public class Game {
 
 
     public void join(String username){
+
+        if (!state.equals("open")){
+            throw new JoiningNotAllowedException();
+        }
         usernames.add(username);
+
+        if(usernames.size() == 2){
+            state = "playing";
+        }
 
     }
 
