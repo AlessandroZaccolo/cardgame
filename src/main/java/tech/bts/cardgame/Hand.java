@@ -4,7 +4,6 @@ import java.util.List;
 
 public class Hand {
 
-
     private List<Card> cards;
 
     public Hand(List<Card> cards) {
@@ -12,7 +11,7 @@ public class Hand {
         this.cards = cards;
     }
 
-    public Card calculate(){
+    public Card calculate() {
 
         int magic = 0;
         int strength = 0;
@@ -22,12 +21,8 @@ public class Hand {
             magic += card.getMagic();
             strength += card.getStrength();
             intelligence += card.getIntelligence();
-
         }
 
         return new Card(magic, strength, intelligence);
-
     }
-
-
 }

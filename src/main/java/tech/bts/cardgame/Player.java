@@ -17,7 +17,4 @@ public class Player {
         return hand;
     }
 
-    @Override
-    public String toString() {return name;}
-
 }
