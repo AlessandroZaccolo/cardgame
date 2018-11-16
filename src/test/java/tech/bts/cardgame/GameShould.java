@@ -4,13 +4,13 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 /**
  * Creating a game:
  * - A game is created with a deck of cards (each card has 3 numbers (>=1) that added make 10).
- *   - Note: the 3 numbers represent magic, strength, intelligence
+ * - Note: the 3 numbers represent magic, strength, intelligence
  * - When a game is created, its state is OPEN. there is a state in the game.
  *
  * Joining a game:
@@ -20,7 +20,8 @@ import static org.junit.Assert.*;
  *
  * Picking cards:
  * - When the game is PLAYING, any player that joined the game can pick a card.
- * - After picking a card, a player must keep it or discard it.
+ * - TODO: Picking is only allowed when PLAYING
+ * - After picking a card, a player must keep it or discard it, before picking another one.
  * - A player can only discard 2 cards (i.e. must pick 3 cards).
  *
  * The battle (point calculation):
@@ -42,7 +43,7 @@ public class GameShould {
 
         Game game = new Game(new Deck());
 
-        assertThat(game.getState(), is("open"));
+        assertThat(game.getState(), is(Game.State.OPEN));
 
     }
 
@@ -56,6 +57,8 @@ public class GameShould {
         Game game = new Game(deck);
 
         game.join("john");
+
+
 
         assertThat(game.getPlayerNames(), is(Arrays.asList("john")));
     }
@@ -71,7 +74,7 @@ public class GameShould {
         game.join("john");
         game.join("mary");
 
-        assertThat(game.getState(), is("playing"));
+        assertThat(game.getState(), is(Game.State.PLAYING));
 
     }
 
@@ -104,4 +107,75 @@ public class GameShould {
         game.join("alex");
 
     }
+
+    @Test
+    public void allow_a_player_pick_a_card_when_playing() {
+
+        Card card = new Card(3,2,5);
+        Deck deck = new Deck();
+        deck.add(card);
+        Game game = new Game(deck);
+
+        game.join("john");
+        game.join("mary");
+        Card pickedCard = game.pickCard("john");
+
+        assertThat(card, is(pickedCard));
+
+    }
+
+    @Test(expected =PlayerNotInTheGameException .class)
+    public void not_allow_picking_card_if_player_didnt_join() {
+
+
+        Game game = new Game(new Deck());
+
+        game.join("john");
+        game.join("mary");
+        game.pickCard("alex");
+
+    }
+
+     // After picking a card, a player must keep it or discard it,
+    // before picking another one.
+
+    @Test(expected = CannotPick2CardsInARowException.class)
+    public void not_allow_picking_2_cards_in_a_row(){
+
+        Deck deck = new Deck();
+        deck.add(new Card(3,2,5));
+        deck.add(new Card(3,2,5));
+        Game game = new Game(deck);
+
+        game.join("susan");
+        game.join("peter");
+
+        game.pickCard("susan");
+        game.pickCard("susan");
+
+    }
+
+    @Test
+    public void allow_picking_if_previous_card_was_discarded(){
+
+        Deck deck = new Deck();
+        Card card1 = new Card(3,2,5);
+        Card card2 = new Card(2,7,1);
+        deck.add(card1);
+        deck.add(card2);
+        Game game = new Game(deck);
+
+        game.join("susan");
+        game.join("peter");
+
+        Card pickedCard1 = game.pickCard("susan");
+        game.discard("susan");
+        Card pickedCard2 = game.pickCard("susan");
+
+        assertThat(pickedCard1, is(card2));
+        assertThat(pickedCard2, is(card1));
+
+    }
+
+
 }
