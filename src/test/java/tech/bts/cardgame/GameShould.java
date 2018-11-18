@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
  *
  * Picking cards:
  * - When the game is PLAYING, any player that joined the game can pick a card.
- * - TODO: Picking is only allowed when PLAYING
+ * - Picking is only allowed when PLAYING
  * - After picking a card, a player must keep it or discard it, before picking another one.
  * - A player can only discard 2 cards (i.e. must pick 3 cards).
  *
@@ -49,6 +49,7 @@ public class GameShould {
 
     @Test
     public void allow_joining_when_open() {
+
         // A player can join an OPEN game
         // (for simplicity, a player is indicated by its username)
 
@@ -174,6 +175,69 @@ public class GameShould {
 
         assertThat(pickedCard1, is(card2));
         assertThat(pickedCard2, is(card1));
+
+    }
+
+
+    // Picking is only allowed when the game is in state PLAYING.
+    // So, in the test, try to pick cards when the game is in another state
+    // (e.g. OPEN), and expect some exception (create that exception class).
+
+    @Test(expected = CannotPickCardsInStateOpen.class)
+    public void not_allow_picking_cards_in_state_open(){
+
+        Deck deck = new Deck();
+        deck.add(new Card(3,2,5));
+        Game game = new Game(deck);
+
+        game.join("susan");
+
+        game.pickCard("susan");
+    }
+
+    // A player can only discard if previously picked a card.
+    // So write a test where a player tries to discard without picking a card.
+    // An exception should be expected (create it).
+
+
+    @Test(expected = AllowDiscardOnlyIfCardIsPickedBefore.class)
+    public void allow_discard_only_if_picked_before(){
+
+        Deck deck = new Deck();
+        deck.add(new Card(3,2,5));
+        Game game = new Game(deck);
+
+        game.join("susan");
+        game.join("peter");
+
+        game.discard("susan");
+    }
+
+    // A player can only discard 2 cards.
+    // Make a test where a player tries to discard 3 cards.
+    // You should expect and exception (create it).
+
+    @Test(expected = AllowDiscardNoMoreThan2Cards.class)
+    public void allow_discard_no_more_than_2_cards(){
+
+        Deck deck = new Deck();
+        Card card1 = new Card(3,2,5);
+        Card card2 = new Card(2,7,1);
+        Card card3 = new Card(2,7,1);
+        deck.add(card1);
+        deck.add(card2);
+        deck.add(card3);
+        Game game = new Game(deck);
+
+        game.join("susan");
+        game.join("peter");
+
+        Card pickedCard1 = game.pickCard("susan");
+        game.discard("susan");
+        Card pickedCard2 = game.pickCard("susan");
+        game.discard("susan");
+        Card pickedCard3 = game.pickCard("susan");
+        game.discard("susan");
 
     }
 

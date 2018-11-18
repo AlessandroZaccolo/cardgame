@@ -44,6 +44,10 @@ public class Game {
 
     public Card pickCard(String username) {
 
+        if (state == State.OPEN){
+            throw new CannotPickCardsInStateOpen();
+        }
+
         if (!usernames.contains(username)) {
             throw new PlayerNotInTheGameException();
         }
@@ -62,8 +66,22 @@ public class Game {
 
     public void discard(String username) {
 
+        Card pickedCard = pickedCardByUsername.get(username);
+        if (pickedCard == null){
+            throw new AllowDiscardOnlyIfCardIsPickedBefore();
+        }
+
         pickedCardByUsername.remove(username);
+
+        int countDischarged = 0;
+        countDischarged++;
+
+        if(countDischarged > 2){
+            throw new AllowDiscardNoMoreThan2Cards();
+        }
+
     }
+
 
 
 
