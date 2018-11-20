@@ -270,8 +270,8 @@ public class GameShould {
         Deck deck = new Deck();
         Card card1 = new Card(3,2,5);
         Card card2 = new Card(2,7,1);
-        Card card3 = new Card(2,7,1);
-        Card card4 = new Card(2,7,1);
+        Card card3 = new Card(5,7,1);
+        Card card4 = new Card(9,7,1);
         deck.add(card1);
         deck.add(card2);
         deck.add(card3);
