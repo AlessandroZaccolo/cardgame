@@ -7,18 +7,25 @@ import java.util.Map;
 
 public class Game {
 
+
     public enum State { OPEN, PLAYING }
 
     private final Deck deck;
     private State state;
     private List<String> usernames;
     private Map<String, Card> pickedCardByUsername;
+    private int countDiscarded;
+    private int countPicked;
+    private List<Card> keptCard;
 
     public Game(Deck deck) {
         this.deck = deck;
         this.state = State.OPEN;
         this.usernames = new ArrayList<>();
         this.pickedCardByUsername = new HashMap<>();
+        this.countDiscarded = 0;
+        this.countPicked = 0;
+        this.keptCard = new ArrayList<>();
     }
 
     public State getState() {
@@ -57,9 +64,16 @@ public class Game {
             throw new CannotPick2CardsInARowException();
         }
 
+
         Card newPickedCard = deck.pickCard();
 
         pickedCardByUsername.put(username, newPickedCard);
+
+        countPicked++;
+
+        if(countPicked > 3){
+            throw new NotAllowToPickMoreThan3Cards();
+        }
 
         return newPickedCard;
     }
@@ -73,14 +87,31 @@ public class Game {
 
         pickedCardByUsername.remove(username);
 
-        int countDischarged = 0;
-        countDischarged++;
 
-        if(countDischarged > 2){
+        countDiscarded++;
+
+        if(countDiscarded > 2){
             throw new AllowDiscardNoMoreThan2Cards();
         }
 
+}
+
+    public List<Card> KeptCardByUser(String username){
+
+        Card pickedCard = pickedCardByUsername.get(username);
+
+        if (pickedCard != null){
+            keptCard.add(pickedCard);
+        }
+
+        return keptCard;
     }
+
+
+
+
+
+
 
 
 

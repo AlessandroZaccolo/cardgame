@@ -1,5 +1,7 @@
 package tech.bts.cardgame;
 
+import java.util.List;
+
 public class Card {
 
     private int magic;
@@ -23,7 +25,7 @@ public class Card {
     public int getIntelligence() {
         return intelligence;
     }
-
+    
     @Override
     public String toString() {
         return "M:" + magic + ", S:" + strength + ", I:" + intelligence;

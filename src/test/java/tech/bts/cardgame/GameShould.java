@@ -1,5 +1,6 @@
 package tech.bts.cardgame;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -137,14 +138,13 @@ public class GameShould {
 
     }
 
-     // After picking a card, a player must keep it or discard it,
+    // After picking a card, a player must keep it or discard it,
     // before picking another one.
 
     @Test(expected = CannotPick2CardsInARowException.class)
     public void not_allow_picking_2_cards_in_a_row(){
 
         Deck deck = new Deck();
-        deck.add(new Card(3,2,5));
         deck.add(new Card(3,2,5));
         Game game = new Game(deck);
 
@@ -238,6 +238,55 @@ public class GameShould {
         game.discard("susan");
         Card pickedCard3 = game.pickCard("susan");
         game.discard("susan");
+
+    }
+
+    // A player can keep cards. Make a test where a player picks one card and keeps it (doesn't discard it).
+    // You need to create the pick method. Also check that the game remembers the cards that each player kept:
+    // write a method to get the cards of a player (could return a list of Cards, or a Hand).
+
+    @Test
+    public void allow_pick_and_keep_a_card(){
+
+        Deck deck = new Deck();
+        Card card1 = new Card(3,2,5);
+        deck.add(card1);
+        Game game = new Game(deck);
+
+        game.join("susan");
+        game.join("peter");
+
+        Card pickedCard1 = game.pickCard("susan");
+
+        assertThat(game.KeptCardByUser("susan"), is(Arrays.asList(pickedCard1)));
+
+    }
+
+    // When a player keeps 3 cards, is not allowed to pick more cards
+
+    @Test(expected = NotAllowToPickMoreThan3Cards.class)
+    public void not_allow_to_pick_more_than_3_cards(){
+
+        Deck deck = new Deck();
+        Card card1 = new Card(3,2,5);
+        Card card2 = new Card(2,7,1);
+        Card card3 = new Card(2,7,1);
+        Card card4 = new Card(2,7,1);
+        deck.add(card1);
+        deck.add(card2);
+        deck.add(card3);
+        deck.add(card4);
+        Game game = new Game(deck);
+
+        game.join("susan");
+        game.join("peter");
+
+        Card pickedCard1 = game.pickCard("susan");
+        game.discard("susan");
+        Card pickedCard2 = game.pickCard("susan");
+        game.discard("susan");
+        Card pickedCard3 = game.pickCard("susan");
+        Card pickedCard4 = game.pickCard("susan");
 
     }
 
