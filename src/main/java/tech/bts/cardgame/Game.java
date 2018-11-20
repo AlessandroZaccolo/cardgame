@@ -100,9 +100,7 @@ public class Game {
 
         Card pickedCard = pickedCardByUsername.get(username);
 
-        if (pickedCard != null){
-            keptCard.add(pickedCard);
-        }
+        keptCard.add(pickedCard);
 
         return keptCard;
     }
