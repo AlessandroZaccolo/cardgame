@@ -1,9 +1,14 @@
 package tech.bts.cardgame;
 
-import org.junit.Assert;
 import org.junit.Test;
+import tech.bts.cardgame.exceptions.*;
+import tech.bts.cardgame.model.Card;
+import tech.bts.cardgame.model.Deck;
+import tech.bts.cardgame.model.Game;
+import tech.bts.cardgame.model.NotPlayingException;
 
 import java.util.Arrays;
+import java.util.HashSet;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -62,7 +67,7 @@ public class GameShould {
 
 
 
-        assertThat(game.getPlayerNames(), is(Arrays.asList("john")));
+        assertThat(game.getPlayerNames(), is(new HashSet<>(Arrays.asList("john"))));
     }
 
     @Test
@@ -126,7 +131,7 @@ public class GameShould {
 
     }
 
-    @Test(expected =PlayerNotInTheGameException .class)
+    @Test(expected = PlayerNotInTheGameException.class)
     public void not_allow_picking_card_if_player_didnt_join() {
 
 
@@ -183,11 +188,10 @@ public class GameShould {
     // So, in the test, try to pick cards when the game is in another state
     // (e.g. OPEN), and expect some exception (create that exception class).
 
-    @Test(expected = CannotPickCardsInStateOpen.class)
-    public void not_allow_picking_cards_in_state_open(){
+    @Test(expected =  NotPlayingException.class)
+    public void not_allow_picking_cards_if_not_playing(){
 
         Deck deck = new Deck();
-        deck.add(new Card(3,2,5));
         Game game = new Game(deck);
 
         game.join("susan");
@@ -200,7 +204,7 @@ public class GameShould {
     // An exception should be expected (create it).
 
 
-    @Test(expected = AllowDiscardOnlyIfCardIsPickedBefore.class)
+    @Test(expected = DidNotPickCardException.class)
     public void allow_discard_only_if_picked_before(){
 
         Deck deck = new Deck();
@@ -217,7 +221,7 @@ public class GameShould {
     // Make a test where a player tries to discard 3 cards.
     // You should expect and exception (create it).
 
-    @Test(expected = AllowDiscardNoMoreThan2Cards.class)
+    @Test(expected = TooManyDiscardsException.class)
     public void allow_discard_no_more_than_2_cards(){
 
         Deck deck = new Deck();
@@ -245,50 +249,8 @@ public class GameShould {
     // You need to create the pick method. Also check that the game remembers the cards that each player kept:
     // write a method to get the cards of a player (could return a list of Cards, or a Hand).
 
-    @Test
-    public void allow_pick_and_keep_a_card(){
-
-        Deck deck = new Deck();
-        Card card1 = new Card(3,2,5);
-        deck.add(card1);
-        Game game = new Game(deck);
-
-        game.join("susan");
-        game.join("peter");
-
-        Card pickedCard1 = game.pickCard("susan");
-
-        assertThat(game.KeptCardByUser("susan"), is(Arrays.asList(pickedCard1)));
-
-    }
 
     // When a player keeps 3 cards, is not allowed to pick more cards
-
-    @Test(expected = NotAllowToPickMoreThan3Cards.class)
-    public void not_allow_to_pick_more_than_3_cards(){
-
-        Deck deck = new Deck();
-        Card card1 = new Card(3,2,5);
-        Card card2 = new Card(2,7,1);
-        Card card3 = new Card(5,7,1);
-        Card card4 = new Card(9,7,1);
-        deck.add(card1);
-        deck.add(card2);
-        deck.add(card3);
-        deck.add(card4);
-        Game game = new Game(deck);
-
-        game.join("susan");
-        game.join("peter");
-
-        Card pickedCard1 = game.pickCard("susan");
-        game.discard("susan");
-        Card pickedCard2 = game.pickCard("susan");
-        game.discard("susan");
-        Card pickedCard3 = game.pickCard("susan");
-        Card pickedCard4 = game.pickCard("susan");
-
-    }
 
 
 }
