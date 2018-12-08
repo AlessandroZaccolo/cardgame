@@ -47,7 +47,8 @@ public class GameWebController {
         result += "<p> Players: "+ game.getPlayerNames() + "</p>";
 
         if (game.getState() == Game.State.OPEN){
-            result += "<a href=\"/join/{gameId}\">Join the game</a>";
+            result += "<a href=\"/games/"  + game.getId()
+                    + "/join/"+ game.getId() + "\">Join the game</a>";
         }
 
         return result;
@@ -94,14 +95,15 @@ public class GameWebController {
         return result;
     }
 
-    @RequestMapping(method = GET, path = "/join/{gameId}")
+    @RequestMapping(method = GET, path = "/{gameId}/join/{gameId}")
     public void joinGame(@PathVariable long gameId, HttpServletResponse response) throws IOException {
 
+        gameService.joinGame(new GameUser(gameId,"robert"));
 
-        gameService.joinGame(new GameUser(gameId,"ferran"));
 
-        response.sendRedirect("/games/{gameId}");
+        response.sendRedirect("/games/"+ gameId);
 
     }
+
 
 }
