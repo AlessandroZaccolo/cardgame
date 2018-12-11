@@ -4,9 +4,6 @@ public class GameUser {
 
 
     private long gameId;
-
-
-
     private String username;
 
     public GameUser() {
