@@ -43,7 +43,7 @@ public class GameApiController {
         gameService.joinGame(gameUser);
 
     }
-    @RequestMapping(method = PUT, path = "/{gameId}pick")
+    @RequestMapping(method = PUT, path = "/{gameId}/pick")
     public Card pickCard(@RequestBody GameUser gameUser, @PathVariable ("gameId") long gameId){
 
         gameUser.setGameId(gameId);
