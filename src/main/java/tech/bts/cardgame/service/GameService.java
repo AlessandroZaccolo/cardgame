@@ -53,6 +53,8 @@ public class GameService {
         return gameRepo.getById(id);
     }
 
+
+
     // TODO When displaying the game detail, if the game is OPEN,
     // display a link to join the game. You need another end-point (method),
     // e.g. joinGame(), similar to getGameById().
