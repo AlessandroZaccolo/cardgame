@@ -2,6 +2,7 @@ package tech.bts.cardgame.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import tech.bts.cardgame.controller.exceptions.GameNotExistsException;
 import tech.bts.cardgame.model.Card;
 import tech.bts.cardgame.model.Game;
 import tech.bts.cardgame.model.GameUser;
@@ -39,7 +40,14 @@ public class GameApiController {
     @RequestMapping(method = GET, path = "/{gameId}")
     public Game getGameById(@PathVariable long gameId) {
 
-        return gameService.getGameById(gameId);
+        Game game = gameService.getGameById(gameId);
+
+        if (game != null){
+            return game;
+        } else {
+            throw new GameNotExistsException();
+        }
+
     }
 
     @RequestMapping(method = PUT, path = "/{gameId}/join")
