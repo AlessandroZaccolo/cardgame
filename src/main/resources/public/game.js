@@ -5,23 +5,19 @@ const gameId = urlParams.get('gameId');
 const gamePromise = axios.get("http://localhost:8080/api/games/" + gameId);
 
 gamePromise
-//.then(x => x.json()) // this is necessary when using fetch
     .then(function(response) {
+            const game = response.data; // In axios you get a response object with the data inside
+            displayGame(game);
 
-        const game = response.data; // In axios you get a response object with the data inside
+    }).catch(function (error) {
+            console.log("There was an error!", error);
+            displayError(error);
 
-        // This function will be called when the data comes
-        // At this point, games contains the data that the end-point sends (the list of games)
+    });
+
+function displayGame(game) {
 
         let gameContainer = document.getElementById("game-container");
-
-
-
-        const goBack = document.createElement("a");
-        goBack.textContent = `Go back to games list`;
-        goBack.href = "http://localhost:8080/games.html";
-        gameContainer.appendChild(goBack);
-
 
         const gameNumber = document.createElement("h1");
         gameNumber.textContent = `Game ${game.id}`;
@@ -37,7 +33,15 @@ gamePromise
         gameContainer.appendChild(gamePlayers);
 
 
+}
+
+function displayError(error) {
+
+        let gameContainer = document.getElementById("game-container");
+
+        const gameError = document.createElement("p");
+        gameError.textContent = "There is an error: " + error;
+        gameContainer.appendChild(gameError);
 
 
-
-    });
+}
