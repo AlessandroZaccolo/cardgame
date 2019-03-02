@@ -17,6 +17,8 @@ public class Example {
 
         Game game = new Game(deck);
 
+        System.out.println(game.toString());
+
 
 
     }

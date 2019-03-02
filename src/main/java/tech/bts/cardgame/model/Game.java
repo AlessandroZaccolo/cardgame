@@ -12,6 +12,7 @@ public class Game {
 
     private long id;
     private final Deck deck;
+
     private State state;
     private Map<String, Player> playersByUsername;
 
@@ -32,6 +33,8 @@ public class Game {
     public State getState() {
         return state;
     }
+
+    public void setState(State state) { this.state = state; }
 
     public void join(String username) {
 
@@ -98,6 +101,11 @@ public class Game {
 
         player.setPickedCard(null);
 
+    }
+
+    @Override
+    public String toString() {
+        return "Game " + id + " has state " + state + " and player " + playersByUsername;
     }
 
 
