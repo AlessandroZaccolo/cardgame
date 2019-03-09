@@ -27,18 +27,9 @@ public class GameRepositoryJdbc {
 
             Connection connection = dataSource.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("select * from games");
-            String players = rs.getString("players");
-
-            if (players != null) {
-                String[] names = players.split(",");
-                for (String name : names) {
-
-                }
-            }
 
             statement.executeUpdate("insert into games (state, players) " +
-                    "values("+ game.getState()+", select value from string_split ("+ game.getPlayerNames()+", )");
+                    "values("+ game.getState()+", null)");
 
 
 
