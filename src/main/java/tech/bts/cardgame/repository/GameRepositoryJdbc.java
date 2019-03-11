@@ -21,29 +21,20 @@ public class GameRepositoryJdbc {
 
     public void create(Game game) {
 
-        try {
+        doWithStatement((statement) -> {
 
-
-
-            Connection connection = dataSource.getConnection();
-            Statement statement = connection.createStatement();
-
-            statement.executeUpdate("insert into games (state, players) " +
-                    "values("+ game.getState()+", null)");
-
-
-
-        } catch (Exception e){
-            throw new RuntimeException("Error creating game", e);
-        }
+            return statement.executeUpdate("insert into games (state, players)" +
+                    " values ('" + game.getState() + "', NULL)");
+        });
     }
 
     public Game getById(long id) {
 
-        try {
 
-            Connection connection = dataSource.getConnection();
-            Statement statement = connection.createStatement();
+
+        return doWithStatement((statement -> {
+
+
             ResultSet rs = statement.executeQuery("select * from games where id = " + id);
 
             Game game = null;
@@ -53,22 +44,19 @@ public class GameRepositoryJdbc {
             }
 
             rs.close();
-            statement.close();
-            connection.close();
 
             return game;
 
-        } catch (Exception e) {
-            throw new RuntimeException("Error getting the games", e);
-        }
+        }));
+
+
     }
 
     public Collection<Game> getAll() {
 
-        try {
 
-            Connection connection = dataSource.getConnection();
-            Statement statement = connection.createStatement();
+        return doWithStatement((statement) -> {
+
             ResultSet rs = statement.executeQuery("select * from games");
 
             List<Game> games = new ArrayList<>();
@@ -80,15 +68,10 @@ public class GameRepositoryJdbc {
             }
 
             rs.close();
-            statement.close();
-            connection.close();
 
             return games;
+        });
 
-
-        } catch (Exception e) {
-            throw new RuntimeException("Error getting the games", e);
-        }
     }
 
     private Game getGame(ResultSet rs) throws SQLException {
@@ -110,5 +93,33 @@ public class GameRepositoryJdbc {
         // The join() method already updates the game state so we don't need to update it
 
         return game;
+    }
+
+
+    // Function --> function that takes an argument and returns a value
+    // Supplier --> function that doesn't take any argument and returns a value
+    // Consumer --> function that takes an argument and doesn't return a value
+
+    // This is similar to Consumer, but allows exception.
+    interface MyFunction<P, R>{
+        R apply(P t) throws Exception;
+    }
+
+    private <T> T doWithStatement(MyFunction<Statement, T> useStatement) {
+
+        try {
+            Connection connection = dataSource.getConnection();
+            Statement statement = connection.createStatement();
+
+            T result = useStatement.apply(statement); // part that you will specify
+
+            statement.close();
+            connection.close();
+
+            return result;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
