@@ -1,6 +1,7 @@
 package tech.bts.cardgame.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import tech.bts.cardgame.controller.exceptions.GameNotExistsException;
 import tech.bts.cardgame.model.Card;
@@ -8,6 +9,7 @@ import tech.bts.cardgame.model.Game;
 import tech.bts.cardgame.model.GameUser;
 import tech.bts.cardgame.service.GameService;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -32,7 +34,7 @@ public class GameApiController {
     }
 
     @RequestMapping(method = GET)
-    public List<Game> getAllGames(){
+    public Collection<Game> getAllGames(){
 
         return gameService.getAllGames();
     }
