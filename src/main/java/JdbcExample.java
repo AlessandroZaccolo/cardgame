@@ -2,6 +2,7 @@ import tech.bts.cardgame.model.Deck;
 import tech.bts.cardgame.model.Game;
 import tech.bts.cardgame.repository.DataSourceUtil;
 import tech.bts.cardgame.repository.GameRepository;
+import tech.bts.cardgame.repository.GameRepositoryJdbc;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -35,9 +36,15 @@ public class JdbcExample{
 
         }
 
-        rs.close();
-        statement.close();
-        connection.close();
+
+
+        GameRepositoryJdbc jdcb = new GameRepositoryJdbc();
+        Game game = new Game(null);
+
+        jdcb.createOrUpdate(22, "Monica");
+        jdcb.getById(26);
+
+
 
     }
 }

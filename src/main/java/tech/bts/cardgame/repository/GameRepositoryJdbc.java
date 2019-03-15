@@ -1,5 +1,7 @@
 package tech.bts.cardgame.repository;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import tech.bts.cardgame.model.Game;
 
@@ -13,64 +15,67 @@ import java.util.*;
 @Repository
 public class GameRepositoryJdbc {
 
-    private DataSource dataSource;
+    private JdbcTemplate jdbcTemplate;
 
     public GameRepositoryJdbc() {
-        this.dataSource = DataSourceUtil.getDataSourceInPath();
+        DataSource dataSource = DataSourceUtil.getDataSourceInPath();
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     public void create(Game game) {
 
-        doWithStatement((statement) -> {
+        jdbcTemplate.update("insert into games (state, players)" +
+                " values ('" + game.getState() + "', NULL)");
 
-            return statement.executeUpdate("insert into games (state, players)" +
-                    " values ('" + game.getState() + "', NULL)");
-        });
     }
+
+    // Implement an update method. It should update the game in the database by ID
+    public void update(long id, String name) {
+
+        Game game = new Game(null);
+
+        if (name.contains(",")){
+            game.setState(Game.State.PLAYING);
+        } else {
+            game.setState(Game.State.OPEN);
+        }
+
+        jdbcTemplate.update("update games set state ='"
+                + game.getState()+"', players ='"
+                + name +"' where id = "+ id);
+
+    }
+
+    // When you have the create and the update methods, implement another method createOrUpdate(game).
+    //- If the game doesn't have an ID (it's null), it will create a game
+    //- If the game has an ID (it's not null), it will update the game.
+
+    public void createOrUpdate(long id, String name){
+
+        GameRepositoryJdbc jdbc = new GameRepositoryJdbc();
+
+        Game game = new Game(null);
+
+        if (jdbc.getById(id) == null){
+            create(game);
+        } else {
+            update(id, name);
+        }
+    }
+
 
     public Game getById(long id) {
 
-
-
-        return doWithStatement((statement -> {
-
-
-            ResultSet rs = statement.executeQuery("select * from games where id = " + id);
-
-            Game game = null;
-
-            if (rs.next()) {
-                game = getGame(rs);
-            }
-
-            rs.close();
-
-            return game;
-
-        }));
-
+        return jdbcTemplate.queryForObject(
+                "select * from games where id = " + id,
+                (rs, rowNum) -> getGame(rs));
 
     }
 
     public Collection<Game> getAll() {
 
-
-        return doWithStatement((statement) -> {
-
-            ResultSet rs = statement.executeQuery("select * from games");
-
-            List<Game> games = new ArrayList<>();
-
-            while (rs.next()) {
-
-                Game game = getGame(rs);
-                games.add(game);
-            }
-
-            rs.close();
-
-            return games;
-        });
+        return jdbcTemplate.query("select * from games",
+                (rs, rowNum) -> getGame(rs) );
 
     }
 
@@ -100,6 +105,7 @@ public class GameRepositoryJdbc {
     // Supplier --> function that doesn't take any argument and returns a value
     // Consumer --> function that takes an argument and doesn't return a value
 
+    /*
     // This is similar to Consumer, but allows exception.
     interface MyFunction<P, R>{
         R apply(P t) throws Exception;
@@ -122,4 +128,5 @@ public class GameRepositoryJdbc {
             throw new RuntimeException(e);
         }
     }
+    */
 }

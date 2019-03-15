@@ -8,3 +8,4 @@ insert into games (state, players) values
   ('PLAYING', 'bart,lisa'),
   ('OPEN', 'homer'),
   ('OPEN', NULL);
+

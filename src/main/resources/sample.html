@@ -1,0 +1,19 @@
+
+<h1>Sample page</h1>
+
+
+<script>
+
+    executeSeveralTimes(5, function () {
+        console.log("I'm an anonymous function");
+    });
+    function sayhello() {
+        console.log("hello!!");
+    }
+    function executeSeveralTimes(times, f) {
+        for(let i= 1; i<=times; i++){
+            f();
+            console.log("Calling")
+        }
+    }
+</script>

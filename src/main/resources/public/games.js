@@ -29,6 +29,9 @@ gamesPromise
 
         }
 
-
-
     });
+
+let addGameBtn = document.querySelector("button");
+addGameBtn.addEventListener("click", function (){
+    console.log("Button was clicked");
+});
