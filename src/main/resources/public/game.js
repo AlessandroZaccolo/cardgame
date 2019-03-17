@@ -9,6 +9,15 @@ gamePromise
             const game = response.data; // In axios you get a response object with the data inside
             displayGame(game);
 
+            if (game.state == "OPEN") {
+                let addPlayerBtn = document.createElement("button");
+                addPlayerBtn.value("Join the game");
+                button.onclick = function () {
+                    updateGame(game, "Alessandro");
+                }
+                gameContainer.appendChild(addPlayerBtn);
+            }
+
     }).catch(function (error) {
             console.log("There was an error!", error);
             displayError(error);
