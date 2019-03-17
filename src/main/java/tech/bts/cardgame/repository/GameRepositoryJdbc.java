@@ -30,19 +30,21 @@ public class GameRepositoryJdbc {
     }
 
     // Implement an update method. It should update the game in the database by ID
-    public void update(long id, String name) {
+    public void update(Game game, String name) {
 
-        Game game = new Game(null);
+        game.join(name);
 
-        if (name.contains(",")){
+        if (game.getPlayerNames().size() == 2){
             game.setState(Game.State.PLAYING);
         } else {
             game.setState(Game.State.OPEN);
         }
 
+
+
         jdbcTemplate.update("update games set state ='"
-                + game.getState()+"', players ='"
-                + name +"' where id = "+ id);
+                + game.getState() +"', players ='"
+                + game.getPlayerNames() +"' where id = "+ game.getId());
 
     }
 
@@ -50,16 +52,14 @@ public class GameRepositoryJdbc {
     //- If the game doesn't have an ID (it's null), it will create a game
     //- If the game has an ID (it's not null), it will update the game.
 
-    public void createOrUpdate(long id, String name){
+    public void createOrUpdate(Game game, String name){
 
         GameRepositoryJdbc jdbc = new GameRepositoryJdbc();
 
-        Game game = new Game(null);
-
-        if (jdbc.getById(id) == null){
+        if (jdbc.getById(game.getId()) == null){
             create(game);
         } else {
-            update(id, name);
+            update(game, name);
         }
     }
 

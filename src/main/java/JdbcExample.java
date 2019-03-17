@@ -41,8 +41,11 @@ public class JdbcExample{
         GameRepositoryJdbc jdcb = new GameRepositoryJdbc();
         Game game = new Game(null);
 
-        jdcb.createOrUpdate(22, "Monica");
-        jdcb.getById(26);
+        game.setId(15);
+
+        jdcb.createOrUpdate(game, "Elena");
+
+        jdcb.createOrUpdate(game, "John");
 
 
 
