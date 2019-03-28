@@ -1,5 +1,6 @@
 package tech.bts.cardgame.repository;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -30,21 +31,21 @@ public class GameRepositoryJdbc {
     }
 
     // Implement an update method. It should update the game in the database by ID
-    public void update(Game game, String name) {
+    public void update(Game game) {
 
-        game.join(name);
+        String names = null;
 
-        if (game.getPlayerNames().size() == 2){
-            game.setState(Game.State.PLAYING);
-        } else {
-            game.setState(Game.State.OPEN);
+        if (game.getPlayerNames() != null && !game.getPlayerNames().isEmpty()){
+            names = "'"+ StringUtils.join(game.getPlayerNames(), ",")+ "'";
         }
 
 
-
-        jdbcTemplate.update("update games set state ='"
+        String sql = "update games set state ='"
                 + game.getState() +"', players ='"
-                + game.getPlayerNames() +"' where id = "+ game.getId());
+                + names +"' where id = "+ game.getId();
+
+
+        jdbcTemplate.update(sql);
 
     }
 
@@ -52,14 +53,14 @@ public class GameRepositoryJdbc {
     //- If the game doesn't have an ID (it's null), it will create a game
     //- If the game has an ID (it's not null), it will update the game.
 
-    public void createOrUpdate(Game game, String name){
+    public void createOrUpdate(Game game){
 
         GameRepositoryJdbc jdbc = new GameRepositoryJdbc();
 
         if (jdbc.getById(game.getId()) == null){
             create(game);
         } else {
-            update(game, name);
+            update(game);
         }
     }
 
@@ -81,7 +82,7 @@ public class GameRepositoryJdbc {
 
     private Game getGame(ResultSet rs) throws SQLException {
 
-        int id = rs.getInt("id");
+        long id = rs.getLong("id");
         String players = rs.getString("players");
 
         Game game = new Game(null);

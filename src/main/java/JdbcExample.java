@@ -43,9 +43,9 @@ public class JdbcExample{
 
         game.setId(15);
 
-        jdcb.createOrUpdate(game, "Elena");
+        jdcb.createOrUpdate(game);
 
-        jdcb.createOrUpdate(game, "John");
+        jdcb.createOrUpdate(game);
 
 
 
